@@ -1,0 +1,12 @@
+{
+  "name": "gt7-server",
+  "version": "1.0.0",
+  "description": "Servidor backend de telemetria GT7",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  }
+}
