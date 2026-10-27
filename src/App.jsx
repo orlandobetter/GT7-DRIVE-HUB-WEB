@@ -1,108 +1,146 @@
-import { useState } from 'react'
-import RaceCentral from './RaceCentral'
-import ElGaraje from './ElGaraje'
-import Gt7Hub from './Gt7Hub'
-import Estrategia from './Estrategia'
-import TimeAttack from './TimeAttack'
-import ClipsComunidad from './ClipsComunidad'
-import AuthModal from './AuthModal'
-import LegendaryTracker from './LegendaryTracker'
+import React, { useState } from 'react';
+import { 
+  Gauge, 
+  Wrench, 
+  Tv, 
+  Calculator, 
+  Timer, 
+  Film, 
+  Landmark, 
+  Users, 
+  Menu, 
+  X, 
+  Activity 
+} from 'lucide-react';
 
-function App() {
-  const [pantallaActiva, setPantallaActiva] = useState('telemetria');
-  const [usuario, setUsuario] = useState(null);
-  const [mostrarAuth, setMostrarAuth] = useState(false);
+// Importa tus componentes (asegúrate de que los nombres coincidan con tus archivos)
+import RaceCentral from './RaceCentral';
+import ElGaraje from './ElGaraje';
+import Gt7Hub from './Gt7Hub';
+import Estrategia from './Estrategia';
+import TimeAttack from './TimeAttack';
+import ClipsComunidad from './ClipsComunidad';
+import LegendaryTracker from './LegendaryTracker';
+import PaddockComunitario from './PaddockComunitario'; // El nuevo módulo de comunidad
+import PaddockComunitario from './PaddockComunitario';
 
-  // Opciones del menú actualizadas con las adiciones
-  const menu = [
-    { id: 'telemetria', titulo: 'Race Central', icono: '🏎️' },
-    { id: 'garaje', titulo: 'El Garaje', icono: '🔧' },
-    { id: 'hub', titulo: 'GT7 Hub', icono: '🎰' },
-    { id: 'estrategia', titulo: 'Calculadora Pits', icono: '⛽' },
-    { id: 'ranking', titulo: 'Time Attack', icono: '⏱️' },
-    { id: 'clips', titulo: 'Muro de Clips', icono: '🎬' },
-    { id: 'hagerty', titulo: 'Hagerty Tracker', icono: '🏛️' },
+export default function App() {
+  const [currentTab, setCurrentTab] = useState('race-central');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Lista de secciones del Driver Hub
+  const menuItems = [
+    { id: 'race-central', label: 'Race Central', icon: <Gauge className="w-5 h-5" /> },
+    { id: 'garaje', label: 'El Garaje & Setups', icon: <Wrench className="w-5 h-5" /> },
+    { id: 'gt7-hub', label: 'GT7 Hub', icon: <Tv className="w-5 h-5" /> },
+    { id: 'estrategia', label: 'Calculadora Pits', icon: <Calculator className="w-5 h-5" /> },
+    { id: 'time-attack', label: 'Time Attack', icon: <Timer className="w-5 h-5" /> },
+    { id: 'clips', label: 'Muro de Clips', icon: <Film className="w-5 h-5" /> },
+    { id: 'hagerty', label: 'Hagerty Tracker', icon: <Landmark className="w-5 h-5" /> },
+    { id: 'paddock', label: 'Paddock Comunitario', icon: <Users className="w-5 h-5" /> },
   ];
 
+  // Renderizador dinámico de la pestaña activa
+  const renderContent = () => {
+    switch (currentTab) {
+      case 'race-central': return <RaceCentral />;
+      case 'garaje': return <ElGaraje />;
+      case 'gt7-hub': return <Gt7Hub />;
+      case 'estrategia': return <Estrategia />;
+      case 'time-attack': return <TimeAttack />;
+      case 'clips': return <ClipsComunidad />;
+      case 'hagerty': return <LegendaryTracker />;
+      case 'paddock': return <PaddockComunitario />;
+      default: return <RaceCentral />;
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-neutral-950 text-white font-sans overflow-hidden">
+    <div className="min-h-screen bg-slate-950 text-white flex flex-col md:flex-row overflow-x-hidden">
       
-      {/* 1. BARRA DE NAVEGACIÓN LATERAL */}
-      <aside className="w-72 bg-neutral-900 border-r border-neutral-800 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.5)] z-10 overflow-y-auto">
-        <div className="p-6 border-b border-neutral-800 bg-neutral-950/50">
-          <h1 className="text-3xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-white to-red-600 drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]">
+      {/* 📱 BARRA SUPERIOR MÓVIL (Solo visible en celulares y tablets pequeñas) */}
+      <div className="md:hidden bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <Activity className="w-6 h-6 text-cyan-400" />
+          <span className="font-black tracking-wider text-lg bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
             NEXAR GT
-          </h1>
-          <p className="text-xs text-neutral-400 mt-1 uppercase tracking-[0.3em] font-semibold">Driver Hub</p>
+          </span>
+        </div>
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="p-2 bg-slate-800 rounded-xl text-cyan-400 focus:outline-none"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* MENÚ LATERAL DESPLEGABLE EN MÓVIL / FIJO EN PC Y TABLET */}
+      <aside className={`
+        fixed md:static inset-y-0 left-0 z-40 w-72 bg-slate-900 border-r border-slate-800 
+        transform transition-transform duration-300 ease-in-out flex flex-col justify-between p-4
+        ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        top-[65px] md:top-0 h-[calc(100vh-65px)] md:h-screen
+      `}>
+        {/* Cabecera del Menú (Oculta en móvil porque ya está arriba la barra) */}
+        <div>
+          <div className="hidden md:flex items-center gap-3 px-3 py-4 mb-4 border-b border-slate-800">
+            <Activity className="w-8 h-8 text-cyan-400 animate-pulse" />
+            <div>
+              <h1 className="font-black text-xl tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
+                NEXAR GT
+              </h1>
+              <span className="text-xs text-gray-400 font-semibold tracking-widest">DRIVER HUB</span>
+            </div>
+          </div>
+
+          {/* Lista de Navegación */}
+          <nav className="space-y-1.5 overflow-y-auto max-h-[calc(100vh-180px)] pr-1">
+            {menuItems.map((item) => {
+              const isActive = currentTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setCurrentTab(item.id);
+                    setMobileMenuOpen(false); // Cierra el menú en móvil al hacer clic
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all ${
+                    isActive
+                      ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-600/30'
+                      : 'text-gray-400 hover:bg-slate-800/60 hover:text-gray-200'
+                  }`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2">
-          {menu.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setPantallaActiva(item.id)}
-              className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
-                pantallaActiva === item.id
-                  ? 'bg-gradient-to-r from-blue-900/40 to-transparent text-blue-400 border-l-4 border-blue-500 shadow-[inset_4px_0_15px_rgba(59,130,246,0.2)]'
-                  : 'text-neutral-500 hover:bg-neutral-800 hover:text-neutral-200 border-l-4 border-transparent'
-              }`}
-            >
-              <span className="text-xl">{item.icono}</span>
-              {item.titulo}
-            </button>
-          ))}
-        </nav>
-
-        {/* Perfil del Usuario / Botón de Login */}
-        <div className="p-5 border-t border-neutral-800 bg-neutral-950/30">
-          {usuario ? (
-            <div className="flex items-center justify-between bg-neutral-950 px-3 py-2.5 rounded-xl border border-neutral-800">
-              <div className="flex items-center gap-3">
-                <img src={usuario.avatar} alt="Avatar" className="w-9 h-9 rounded-full bg-blue-500/20 p-1 border border-blue-500" />
-                <div>
-                  <p className="text-sm font-bold text-white truncate max-w-[110px]">{usuario.nombre}</p>
-                  <div className="flex gap-1 text-[10px] font-mono">
-                    <span className="text-blue-400 font-bold">DR: {usuario.nivel}</span>
-                    <span className="text-neutral-500">|</span>
-                    <span className="text-green-400 font-bold">SR: {usuario.deportividad}</span>
-                  </div>
-                </div>
-              </div>
-              <button onClick={() => setUsuario(null)} title="Cerrar Sesión" className="text-neutral-500 hover:text-red-500 text-xs font-bold px-2 py-1">
-                Salir
-              </button>
-            </div>
-          ) : (
-            <button onClick={() => setMostrarAuth(true)} className="w-full bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 transition-colors shadow">
-              <span>🔑</span> Iniciar Sesión
-            </button>
-          )}
+        {/* Estado del Sistema Inferior */}
+        <div className="hidden md:block pt-4 border-t border-slate-800/80">
+          <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+            <span className="text-gray-400 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Cloud Sync
+            </span>
+            <span className="text-cyan-400 font-bold">ONLINE</span>
+          </div>
         </div>
       </aside>
 
-      {/* 2. ÁREA PRINCIPAL */}
-      <main className="flex-1 bg-[#0a0a0a] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#333_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        
-        <div className="relative h-full w-full flex flex-col items-center justify-center">
-          {pantallaActiva === 'telemetria' && <RaceCentral />}
-          {pantallaActiva === 'garaje' && <ElGaraje />}
-          {pantallaActiva === 'hub' && <Gt7Hub />}
-          {pantallaActiva === 'estrategia' && <Estrategia />}
-          {pantallaActiva === 'ranking' && <TimeAttack />}
-          {pantallaActiva === 'clips' && <ClipsComunidad />}
-          {pantallaActiva === 'hagerty' && <LegendaryTracker />}
-        </div>
+      {/* 🖥️ CONTENIDO PRINCIPAL DINÁMICO */}
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto bg-slate-950 max-w-7xl mx-auto w-full">
+        {renderContent()}
       </main>
 
-      {mostrarAuth && (
-        <AuthModal 
-          alIniciarSesion={(datosUser) => { setUsuario(datosUser); setMostrarAuth(false); }} 
-          alCerrar={() => setMostrarAuth(false)} 
+      {/* Overlay oscuro para cuando el menú móvil esté abierto */}
+      {mobileMenuOpen && (
+        <div
+          onClick={() => setMobileMenuOpen(false)}
+          className="fixed inset-0 bg-black/60 z-30 md:hidden backdrop-blur-sm"
         />
       )}
     </div>
-  )
+  );
 }
-
-export default App
