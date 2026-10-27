@@ -22,7 +22,6 @@ import TimeAttack from './TimeAttack';
 import ClipsComunidad from './ClipsComunidad';
 import LegendaryTracker from './LegendaryTracker';
 import PaddockComunitario from './PaddockComunitario'; // El nuevo módulo de comunidad
-import PaddockComunitario from './PaddockComunitario';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('race-central');
