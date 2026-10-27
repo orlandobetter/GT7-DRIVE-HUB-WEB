@@ -19,7 +19,7 @@ export default function RaceCentral() {
 
   // Conexión en tiempo real con el servidor Node.js (WebSocket)
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
+    const ws = new WebSocket('wss://nexar-gt-driver-hub.onrender.com');
 
     ws.onopen = () => {
       setEstadoConexion('CONECTADO');
